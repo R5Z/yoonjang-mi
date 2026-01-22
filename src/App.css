@@ -15,6 +15,37 @@ body {
   font-family: -apple-system, sans-serif;
 }
 
+/* 로고 컨테이너 */
+.logo-container {
+  text-decoration: none;
+  display: block;
+}
+
+/* 아스키 로고 전용 스타일 */
+.ascii-logo {
+  font-family: 'Courier New', Courier, monospace; /* 고정 폭 폰트 필수 */
+  font-size: 11px;      /* 아스키 아트의 정밀도에 따라 조절 (8~10px 권장) */
+  font-weight: 900;
+  line-height: 1;    /* 줄 간격을 좁게 하여 선이 이어지게 함 */
+  color: var(--black);  
+  margin: 0;
+  white-space: pre;    /* 공백과 줄바꿈을 그대로 유지 */
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.ascii-logo:hover {
+  color: var(--green); /* 호버 시 피드백 */
+}
+
+/* 로고가 들어갈 헤더 정렬 수정 */
+.main-header {
+  height: auto;        /* 로고 높이에 따라 유연하게 변경 */
+  min-height: var(--header-height);
+  padding: 15px 0;    /* 아스키 로고 위아래 여백 */
+  align-items: center; /* 로고와 메뉴의 중앙 정렬 */
+}
+
 /* 상하단 고정 레이아웃 */
 .main-header {
   position: fixed; top: 0; left: 0; width: 100%;
