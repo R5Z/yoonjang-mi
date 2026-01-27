@@ -49,12 +49,13 @@ export default function About() {
       <h1 className="page-title">Jangmi Yoon</h1>
       <div className="page-content">
         <p>who continues to walk despite the fear</p>
-        <p>hey@yoonjang.me</p>
+        <a href="mailto:hey@yoonjang.me" className="email-link">hey@yoonjang.me</a> | <a href="https://instagram.com/asaucybloom" target="_blank" rel="noopener noreferrer">
+  IG asaucybloom</a>
+        <p>재밌는 일 있으면 좀 알려주세요. ↓ Tell me if something fun or silly comes up.</p>
       </div>
 
       {/* Contact Form */}
       <div className="contact-form-section">
-        <h2 className="contact-title">Get in touch</h2>
         
         <form onSubmit={handleSubmit} className="contact-form">
           <div className="form-group">
