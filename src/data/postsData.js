@@ -1,23 +1,36 @@
 import fm from "front-matter";
-import testPostRaw from "../content/posts/260124_post0.md?raw";
 
-const processPost = (id, rawContent) => {
+// posts의 모든 마크다운 불러오기
+const postFiles = import.meta.glob('../content/posts/*.md', { 
+  query: '?raw', 
+  eager: true 
+});
+
+const processPost = (path, rawContent) => {
   if (!rawContent) return null;
 
   try {
+    // 파일 경로에서 파일명만 추출하여 ID로
+    const id = path.split('/').pop().replace('.md', '');
     const parsed = fm(rawContent);
-    // parsed.attributes: frontmatter 객체
-    // parsed.body: 본문
+    
     return {
       id,
       ...parsed.attributes,
       content: parsed.body,
     };
   } catch (e) {
-    console.error(`ID: ${id} - front-matter 파싱 에러:`, e);
+    console.error(`Path: ${path} - 파싱 에러:`, e);
     return null;
   }
 };
 
-const rawPosts = [processPost("test-post", testPostRaw)];
-export const postsData = rawPosts.filter(Boolean);
+export const postsData = Object.entries(postFiles)
+  .map(([path, content]) => processPost(path, content.default || content))
+  .filter(Boolean)
+  .sort((a, b) => {
+    // b(다음 아이템)의 날짜에서 a(현재 아이템)의 날짜를 빼서 내림차순(최신순) 정렬
+    return new Date(b.date.replace(/\. /g, '-')) - new Date(a.date.replace(/\. /g, '-'));
+  });
+
+console.log("날짜순 정렬 완료:", postsData);

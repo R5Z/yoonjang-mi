@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import { useParams } from 'react-router-dom';
 import { postsData } from '../data/postsData';
 
@@ -36,7 +37,7 @@ const PostDetail = () => {
       
       {/* 마크다운 본문 */}
       <div className="post-content">
-        <ReactMarkdown>{post.content}</ReactMarkdown>
+        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{post.content}</ReactMarkdown>
       </div>
     </div>
   );
