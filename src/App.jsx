@@ -3,6 +3,7 @@ import Logo from "./components/Logo";
 import "./App.css";
 
 import Home from "./pages/Home";
+import Posts from "./pages/Posts";
 import About from "./pages/About";
 import PostDetail from "./pages/PostDetail";
 
@@ -17,7 +18,7 @@ function App() {
         <div className="header-inner">
           <Logo /> 
           <nav className="main-nav">
-            <Link to="/">posts</Link>
+            <Link to="/posts">posts</Link>
             <Link to="/about">about</Link>
           </nav>
         </div>
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           {/* postsData를 전달하여 Home에서 최신 6개를 보여줍니다. */}
           <Route path="/" element={<Home posts={postsData} />} />
+          <Route path="/posts" element={<Posts posts={postsData} />} />
           <Route path="/post/:postId" element={<PostDetail />} />
           <Route path="/about" element={<About />} />
         </Routes>

@@ -135,7 +135,6 @@ body {
   letter-spacing: -0.04em;
   position: relative;
   z-index: 2;
-  pointer-events: none;
 }
 
 /* 포스트 메타 및 태그 */
@@ -192,7 +191,7 @@ body {
 }
 
 .post-row:hover .post-title {
-  color: var(--green);
+  color: var(--green) !important;
 }
 
 /* About, Contact 페이지 */
@@ -349,6 +348,7 @@ a:hover, .post-link:hover {
   transition: all 0.3s;
   align-self: flex-start;
   letter-spacing: 0.02em;
+  border-radius: 0;
 }
 
 .submit-button:hover:not(:disabled) {
@@ -393,5 +393,93 @@ a:hover, .post-link:hover {
   .form-group input,
   .form-group textarea {
     font-size: 16px; /* iOS 줌 방지 */
+  }
+}
+
+/* ========================================
+   Posts Page Controls & Pagination
+   ======================================== */
+
+.posts-header {
+  position: absolute;
+  top: calc(var(--header-height) + 90px); /* container의 padding-top과 동일 */
+  right: var(--side-padding);
+  z-index: 10;
+  margin-top: -60px;
+}
+
+.sort-select {
+  background: transparent;
+  border: none;
+  font-family: serif;
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--black);
+  cursor: pointer;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  padding: 0;
+}
+
+.sort-select:hover {
+  opacity: 1;
+}
+
+.sort-select option {
+  font-style: normal;
+  background: var(--bg);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-top: 80px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.pagination button {
+  background: none;
+  border: none;
+  color: var(--black);
+  cursor: pointer;
+  font-family: -apple-system, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: color 0.2s ease;
+  padding: 0;
+}
+
+.pagination button:hover:not(:disabled) {
+  color: var(--green);
+}
+
+.pagination button:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: var(--black);
+  opacity: 0.7;
+  font-family: serif;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .posts-header {
+    position: static;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+  }
+
+  .pagination {
+    margin-top: 60px;
+    gap: 20px;
   }
 }
