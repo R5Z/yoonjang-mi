@@ -229,6 +229,17 @@ a:hover, .post-link:hover {
   color: var(--green) !important;
 }
 
+/* 모바일 전용 스타일 (768px 이하) */
+@media (max-width: 768px) {
+  .post-row {
+    margin-bottom: 40px; /* 포스트 간 간격 크게 */
+  }
+
+  .post-preview-img {
+    margin-bottom: 5px; /* 이미지와 메타 정보 사이 간격 좁게 */
+  }
+}
+
 /* 반응형 - 화면이 좁아지면 메타태그를 가로로 */
 @media (max-width: 768px) {
   :root {
