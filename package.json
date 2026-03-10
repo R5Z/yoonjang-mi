@@ -12,9 +12,10 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",
     "@vercel/analytics": "^1.6.1",
-    "framer-motion": "^12.26.2",
+    "framer-motion": "^12.35.2",
     "front-matter": "^4.0.2",
     "gray-matter": "^4.0.3",
+    "lucide-react": "^0.577.0",
     "nodemailer": "^7.0.12",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
