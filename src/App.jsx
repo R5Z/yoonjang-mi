@@ -1,5 +1,6 @@
 import { Analytics } from '@vercel/analytics/react';
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import Logo from "./components/Logo";
 import "./App.css";
 
@@ -14,34 +15,36 @@ function App() {
   console.log("app got data:", postsData);
 
   return (
-    <Router>
-      <header className="main-header">
-        <div className="header-inner">
-          <Logo /> 
-          <nav className="main-nav">
-            <Link to="/posts">posts</Link>
-            <Link to="/about">about</Link>
-          </nav>
-        </div>
-      </header>
+    <HelmetProvider>
+      <Router>
+        <header className="main-header">
+          <div className="header-inner">
+            <Logo /> 
+            <nav className="main-nav">
+              <Link to="/posts">posts</Link>
+              <Link to="/about">about</Link>
+            </nav>
+          </div>
+        </header>
 
-      <div className="content-area">
-        <Routes>
-          {/* postsData Home에서 최신 6개 */}
-          <Route path="/" element={<Home posts={postsData} />} />
-          <Route path="/posts" element={<Posts posts={postsData} />} />
-          <Route path="/post/:postId" element={<PostDetail />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-        <Analytics />
-      </div>
-
-      <footer className="main-footer">
-        <div className="footer-inner">
-          <span className="copyright">2026 © Jangmi Yoon</span>
+        <div className="content-area">
+          <Routes>
+            {/* postsData Home에서 최신 6개 */}
+            <Route path="/" element={<Home posts={postsData} />} />
+            <Route path="/posts" element={<Posts posts={postsData} />} />
+            <Route path="/post/:postId" element={<PostDetail />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+          <Analytics />
         </div>
-      </footer>
-    </Router>
+
+        <footer className="main-footer">
+          <div className="footer-inner">
+            <span className="copyright">2026 © Jangmi Yoon</span>
+          </div>
+        </footer>
+      </Router>
+    </HelmetProvider>
   );
 }
 

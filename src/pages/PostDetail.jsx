@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { postsData } from '../data/postsData';
 import Comments from '../components/Comments';
 import { supabase } from '../supabaseClient';
+import { Helmet } from 'react-helmet-async';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -13,40 +14,37 @@ const PostDetail = () => {
 
   const [stats, setStats] = useState({ views: 0, likes: 0 });
 
-useEffect(() => {
-  const currentPostId = post?.id; // post 객체에서 id만 따로 추출
-  if (!currentPostId) return;
+  useEffect(() => {
+    const currentPostId = post?.id;
+    if (!currentPostId) return;
 
-  let isMounted = true;
+    let isMounted = true;
 
-  const updateAndFetchStats = async () => {
-    try {
-      // 조회수 증가
-      await supabase.rpc('increment_views', { post_id: currentPostId });
-      
-      // 최신 통계 가져오기
-      const { data } = await supabase
-        .from('post_stats')
-        .select('views, likes')
-        .eq('id', currentPostId)
-        .single();
-      
-      if (isMounted && data) {
-        setStats(data);
+    const updateAndFetchStats = async () => {
+      try {
+        await supabase.rpc('increment_views', { post_id: currentPostId });
+        
+        const { data } = await supabase
+          .from('post_stats')
+          .select('views, likes')
+          .eq('id', currentPostId)
+          .single();
+        
+        if (isMounted && data) {
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Stats error:", error);
       }
-    } catch (error) {
-      console.error("Stats error:", error);
-    }
-  };
+    };
 
-  updateAndFetchStats();
+    updateAndFetchStats();
 
-  return () => {
-    isMounted = false;
-  };
-}, [post?.id]);
+    return () => {
+      isMounted = false;
+    };
+  }, [post?.id]);
 
-  // 좋아요 클릭 핸들러
   const handleLike = async () => {
     await supabase.rpc('increment_likes', { post_id: post.id });
     setStats(prev => ({ ...prev, likes: prev.likes + 1 }));
@@ -54,12 +52,25 @@ useEffect(() => {
 
   if (!post) return <div className="container">포스트를 찾을 수 없습니다.</div>;
 
+  // 메타 설명(Description) - 본문 텍스트
+  const description = post.content ? post.content.substring(0, 150).replace(/[#*`]/g, '') : "";
+
   return (
     <div className="container">
-      {/* 상단 메타 정보: 날짜가 먼저, 그 다음 모든 태그 나열 */}
-      <div className="post-meta" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '20px' }}>
+      {/* 브라우저 탭 이름 및 메타 태그 동적 설정 */}
+      <Helmet>
+        <title>{post.title} | Jangmi's Blog</title>
+        <meta name="description" content={description} />
         
-        {/* 날짜, 통계 */}
+        {/* SNS 공유 시 표시될 정보 (Open Graph) */}
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={description} />
+        {post.imgUrl && <meta property="og:image" content={post.imgUrl} />}
+        <meta property="og:type" content="article" />
+      </Helmet>
+
+      {/* 상단 메타 정보: 날짜, 조회수, 좋아요 */}
+      <div className="post-meta" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '20px' }}>
         <span className="date">
           {post.date}
           <span style={{ marginLeft: '10px' }}>Views {stats.views}</span>
@@ -72,8 +83,6 @@ useEffect(() => {
           </span>
         </span>
 
-
-        {/* 태그 리스트를 그 뒤에 나열 */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {post.tags && post.tags.map((tag, index) => (
             <span key={index} className="category">
@@ -87,14 +96,12 @@ useEffect(() => {
         {post.title}
       </h1>
       
-      {/* 마크다운 본문 */}
       <div className="post-content">
         <ReactMarkdown rehypePlugins={[rehypeRaw]}>
           {post.content}
         </ReactMarkdown>
       </div>
 
-      {/* 댓글 섹션 추가 */}
       <Comments postId={postId} />
     </div>
   );
