@@ -46,63 +46,69 @@ const PostDetail = () => {
   }, [post?.id]);
 
   const handleLike = async () => {
+    if (!post) return;
     await supabase.rpc('increment_likes', { post_id: post.id });
     setStats(prev => ({ ...prev, likes: prev.likes + 1 }));
   };
 
-  if (!post) return <div className="container">포스트를 찾을 수 없습니다.</div>;
-
-  // 메타 설명(Description) - 본문 텍스트
-  const description = post.content ? post.content.substring(0, 150).replace(/[#*`]/g, '') : "";
+  const description = post?.content 
+    ? post.content.substring(0, 150).replace(/[#*`]/g, '') 
+    : "포스트를 불러오는 중입니다.";
 
   return (
     <div className="container">
-      {/* 브라우저 탭 이름 및 메타 태그 동적 설정 */}
       <Helmet>
-        <title>{post.title} | Jangmi's Blog</title>
+        <title>
+          {post ? `${post.title} | yoonjang.me` : "Loading... | yoonjang.me"}
+        </title>
         <meta name="description" content={description} />
         
-        {/* SNS 공유 시 표시될 정보 (Open Graph) */}
-        <meta property="og:title" content={post.title} />
+        {/* Open Graph 설정 */}
+        <meta property="og:title" content={post?.title || "yoonjang.me"} />
         <meta property="og:description" content={description} />
-        {post.imgUrl && <meta property="og:image" content={post.imgUrl} />}
-        <meta property="og:type" content="article" />
+        {post?.imgUrl && <meta property="og:image" content={post.imgUrl} />}
       </Helmet>
 
-      {/* 상단 메타 정보: 날짜, 조회수, 좋아요 */}
-      <div className="post-meta" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '20px' }}>
-        <span className="date">
-          {post.date}
-          <span style={{ marginLeft: '10px' }}>Views {stats.views}</span>
-          <span
-            onClick={handleLike}
-            style={{ marginLeft: '10px', cursor: 'pointer' }}
-          >
-            <span style={{ fontSize: '0.8rem' }}>· ♥ </span>
-            Likes {stats.likes}
-          </span>
-        </span>
-
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-          {post.tags && post.tags.map((tag, index) => (
-            <span key={index} className="category">
-              {tag}
+      {/* 실제 포스트 내용 렌더링 조건부 처리 */}
+      {!post ? (
+        <div className="container">포스트를 찾을 수 없습니다.</div>
+      ) : (
+        <>
+          <div className="post-meta" style={{ display: 'flex', gap: '5px', flexWrap: 'wrap', marginBottom: '20px' }}>
+            <span className="date">
+              {post.date}
+              <span style={{ marginLeft: '10px' }}>Views {stats.views}</span>
+              <span
+                onClick={handleLike}
+                style={{ marginLeft: '10px', cursor: 'pointer' }}
+              >
+                <span style={{ fontSize: '0.8rem' }}>· ♥ </span>
+                Likes {stats.likes}
+              </span>
             </span>
-          ))}
-        </div>
-      </div>
 
-      <h1 className="page-title" style={{ marginBottom: '60px' }}>
-        {post.title}
-      </h1>
-      
-      <div className="post-content">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>
-          {post.content}
-        </ReactMarkdown>
-      </div>
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+              {post.tags && post.tags.map((tag, index) => (
+                <span key={index} className="category">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
 
-      <Comments postId={postId} />
+          <h1 className="page-title" style={{ marginBottom: '60px' }}>
+            {post.title}
+          </h1>
+          
+          <div className="post-content">
+            <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+              {post.content}
+            </ReactMarkdown>
+          </div>
+
+          <Comments postId={postId} />
+        </>
+      )}
     </div>
   );
 };
