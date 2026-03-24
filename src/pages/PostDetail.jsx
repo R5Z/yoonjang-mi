@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom'; // Link 추가
 import { postsData } from '../data/postsData';
 import Comments from '../components/Comments';
 import { supabase } from '../supabaseClient';
@@ -10,7 +10,15 @@ import { Helmet } from 'react-helmet-async';
 
 const PostDetail = () => {
   const { postId } = useParams();
-  const post = postsData.find((p) => String(p.id) === String(postId));
+  
+  // 현재 포스트 인덱스
+  const currentIndex = postsData.findIndex((p) => String(p.id) === String(postId));
+  const post = postsData[currentIndex];
+
+  // 이전(과거), 다음(최신) 포스트 결정
+  // postsData가 최신순 정렬이라면: index-1이 다음 글, index+1이 이전 글
+  const nextPost = currentIndex > 0 ? postsData[currentIndex - 1] : null;
+  const prevPost = currentIndex < postsData.length - 1 ? postsData[currentIndex + 1] : null;
 
   const [stats, setStats] = useState({ views: 0, likes: 0 });
 
@@ -63,13 +71,11 @@ const PostDetail = () => {
         </title>
         <meta name="description" content={description} />
         
-        {/* Open Graph 설정 */}
         <meta property="og:title" content={post?.title || "yoonjang.me"} />
         <meta property="og:description" content={description} />
         {post?.imgUrl && <meta property="og:image" content={post.imgUrl} />}
       </Helmet>
 
-      {/* 실제 포스트 내용 렌더링 조건부 처리 */}
       {!post ? (
         <div className="container">포스트를 찾을 수 없습니다.</div>
       ) : (
@@ -105,6 +111,39 @@ const PostDetail = () => {
               {post.content}
             </ReactMarkdown>
           </div>
+
+          {/* --- 포스트 내비게이션 --- */}
+          <nav className="post-navigation" style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            gap: '20px', 
+            marginTop: '100px', 
+            paddingTop: '40px', 
+            borderTop: '1px solid #aaa'
+          }}>
+            <div style={{ flex: 1, textAlign: 'left' }}>
+              {prevPost && (
+                <Link to={`/post/${prevPost.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#aaa', letterSpacing: '1px' }}>PREVIOUS</span>
+                  <h4 style={{ margin: '5px 0 0', fontSize: '0.95rem', fontWeight: '400', lineHeight: '1.4' }}>
+                    ← {prevPost.title}
+                  </h4>
+                </Link>
+              )}
+            </div>
+
+            <div style={{ flex: 1, textAlign: 'right' }}>
+              {nextPost && (
+                <Link to={`/post/${nextPost.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#aaa', letterSpacing: '1px' }}>NEXT</span>
+                  <h4 style={{ margin: '8px 0 0', fontSize: '1rem', fontWeight: '400', lineHeight: '1.4' }}>
+                    {nextPost.title} →
+                  </h4>
+                </Link>
+              )}
+            </div>
+          </nav>
+          {/* --------------------------- */}
 
           <Comments postId={postId} />
         </>

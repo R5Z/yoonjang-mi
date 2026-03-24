@@ -139,7 +139,7 @@ export default function Comments({ postId }) {
 
   return (
     <div className="container">
-      <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '40px', marginTop: '80px' }}>
+      <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '40px', marginTop: '1px' }}>
         댓글 ({comments.length})
       </h2>
       
@@ -150,7 +150,7 @@ export default function Comments({ postId }) {
           <input
             className="comment-input"
             type="text"
-            placeholder="이름을 입력하세요"
+            placeholder="Your name here..."
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={inputStyle}
@@ -162,7 +162,7 @@ export default function Comments({ postId }) {
           <input
             className="comment-input"
             type="email"
-            placeholder="your@email.com(비공개)"
+            placeholder="your@email.com(private)"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             style={inputStyle}
